@@ -6,6 +6,7 @@ import (
 	"os"
 	"github.com/valyala/fasthttp"
 	"strconv"
+	"strings"
 )
 
 var timeout, _ = strconv.Atoi(os.Getenv("TIMEOUT"))
@@ -32,6 +33,13 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 
 	if ok && string(ctx.Request.Header.Peek("PROXYKEY")) != val {
 		ctx.SetStatusCode(407)
+		ctx.SetBody([]byte("Missing or invalid PROXYKEY header."))
+		return
+	}
+
+	if len(strings.SplitN(string(ctx.Request.Header.RequestURI())[1:], "/", 2)) < 2 {
+		ctx.SetStatusCode(400)
+		ctx.SetBody([]byte("URL format invalid."))
 		return
 	}
 
@@ -59,7 +67,8 @@ func makeRequest(ctx *fasthttp.RequestCtx, attempt int) *fasthttp.Response {
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
 	req.Header.SetMethod(string(ctx.Method()))
-	req.SetRequestURI(string(ctx.Request.Header.RequestURI())[1:])
+	url := strings.SplitN(string(ctx.Request.Header.RequestURI())[1:], "/", 2)
+	req.SetRequestURI("https://" + url[0] + ".roblox.com/" + url[1])
 	req.SetBody(ctx.Request.Body())
 	ctx.Request.Header.VisitAll(func (key, value []byte) {
 		req.Header.Set(string(key), string(value))

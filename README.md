@@ -5,6 +5,4 @@ Setup is easy, simply deploy with the button below and configure environment var
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/halffalse/roproxy-lite)
 
-When "KEY" environment variable is populated, a matching "PROXYKEY" header must be present. Use with HTTPService as you normally would, simply adding your proxy before the roblox url. E.g. https://roproxytest.herokuapp.com/https://games.roblox.com/
-
-Note: This isn't actually restricted to roblox domains. If this is something you'd like to see, let me know or feel free to implement it yourself.
+When "KEY" environment variable is populated, a matching "PROXYKEY" header must be present. Requests must be made in the format /subdomain/path. E.g. https://games.roblox.com/docs -> https://roproxytest.heroku.com/games/docs
