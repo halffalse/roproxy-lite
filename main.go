@@ -3,14 +3,15 @@ package main
 import (
 	"log"
 	"time"
-	"os" // remove if not using os.Getenv("PORT") for port.
+	"os"
 	"github.com/valyala/fasthttp"
+	"strconv"
 )
 
-// options
-var timeout = 5 // timeout in seconds
-var retries = 5 // number of request attempts. minimum: 1
-var port = os.Getenv("PORT") // port to use. if not using heroku, replace with port in string format (e.g. "8080")
+var timeout, _ = strconv.Atoi(os.Getenv("TIMEOUT"))
+var retries, _ = strconv.Atoi(os.Getenv("RETRIES"))
+var key = os.Getenv("KEY")
+var port = os.Getenv("PORT")
 
 var client *fasthttp.Client
 
@@ -28,6 +29,13 @@ func main() {
 }
 
 func requestHandler(ctx *fasthttp.RequestCtx) {
+	val, ok := os.LookupEnv(key)
+
+	if ok && string(ctx.Request.Header.Peek("PROXYKEY")) != val {
+		ctx.SetStatusCode(407)
+		return
+	}
+
 	response := makeRequest(ctx, 1)
 
 	defer fasthttp.ReleaseResponse(response)
