@@ -10,7 +10,6 @@ import (
 
 var timeout, _ = strconv.Atoi(os.Getenv("TIMEOUT"))
 var retries, _ = strconv.Atoi(os.Getenv("RETRIES"))
-var key = os.Getenv("KEY")
 var port = os.Getenv("PORT")
 
 var client *fasthttp.Client
@@ -29,7 +28,7 @@ func main() {
 }
 
 func requestHandler(ctx *fasthttp.RequestCtx) {
-	val, ok := os.LookupEnv(key)
+	val, ok := os.LookupEnv("KEY")
 
 	if ok && string(ctx.Request.Header.Peek("PROXYKEY")) != val {
 		ctx.SetStatusCode(407)
