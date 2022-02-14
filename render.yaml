@@ -1,0 +1,14 @@
+services:
+ - type: web
+   name: roproxy-lite
+   env: go
+   repo: https://github.com/halffalse/roproxy-lite.git
+   buildCommand: go build -tags netgo -ldflags '-s -w' -o app
+   startCommand: ./app
+   envVars:
+    - key: TIMEOUT
+      value: 5
+    - key: RETRIES
+      value: 5
+    - key: KEY
+      sync: false
