@@ -1,4 +1,4 @@
-# roproxy-lite
+# RoProxy Lite
 A modified version of RoProxy made for self-hosting.
 
 Setup is easy, simply deploy with the button below and configure environment variables. The KEY variable is optional, leave blank to not require an auth key.
